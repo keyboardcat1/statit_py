@@ -1,2 +1,4 @@
 # statit_py
-Utilities for gostatit.com
+This package is a set of utilities for gostatit.com, including an API and some data manipulation utilities.
+
+
