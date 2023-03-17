@@ -1,9 +1,11 @@
 import requests
-from typing import Callable
+import multiprocessing
+from time import sleep
 
 ENDPOINT = 'https://api.gostatit.com/core'
+#ENDPOINT = 'http://localhost:3000/dev/core'
 class API:
-    """An API to interact with the api.gostatit.com web API"""
+    """A python API to interact with the api.gostatit.com web API"""
         
     def __init__(self, username: str, apikey: str):
         self.__username = username
@@ -16,7 +18,7 @@ class API:
     
     def getCollection(self, id: str) -> dict[str, any]:
         json = {
-            'action': 'getCollection', input: {
+            'action': 'getCollection', 'input': {
                 "id": id,
             },
         }
@@ -24,7 +26,7 @@ class API:
 
     def deleteCollection(self, id: str):
         json = {
-            'action': 'deleteCollection', input: {
+            'action': 'deleteCollection', 'input': {
                 "id": id,
             },
         }
@@ -57,25 +59,25 @@ class API:
 
     def getCollectionJSON(self, input: dict[str, any]) -> dict[str, any]:
         json = {
-            'action': 'getCollection', input: input,
+            'action': 'getCollection', 'input': input,
         }
         return self.__post(json)
 
     def putCollectionJSON(self, input: dict[str, any]):
         json = {
-            'action': 'putCollection', input: input,
+            'action': 'putCollection', 'input': input,
         }
         self.__post(json)
 
     def updateCollectionJSON(self, input: dict[str, any]):
         json = {
-            'action': 'updateCollection', input: input,
+            'action': 'updateCollection', 'input': input,
         }
         self.__post(json)
 
     def deleteCollectionJSON(self, input: dict[str, any]):
         json = {
-            'action': 'deleteCollection', input: input,
+            'action': 'deleteCollection', 'input': input,
         }
         self.__post(json)
 
@@ -103,6 +105,15 @@ class API:
         }
         self.__post(json)
 
+    def putAllSeriesJSON(self, input: list[dict[str, any]]):
+        batch = []
+        for serie in input:
+            batch.append(serie)
+            if len(batch) == 25:
+                self.batchPutSerieJSON(batch)
+                batch = []
+        if batch != [] : self.batchPutSerieJSON(batch)
+        
     def updateSerieJSON(self, input: dict[str, any]):
         json = {
             'action': 'updateSerie', 'input': input,
@@ -114,6 +125,8 @@ class API:
             'action': 'deleteSerie', 'input': input,
         }
         self.__post(json)
+    
+
 
 
     
